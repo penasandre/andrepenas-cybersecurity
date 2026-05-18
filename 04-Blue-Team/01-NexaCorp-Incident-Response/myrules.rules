@@ -1,0 +1,2 @@
+alert tcp any any -> $HOME_NET 21 (msg:"EXPLOIT FTP vsfpd 2.3.4 - Trigger detected"; flow:to_server,established; content:"USER "; content:":)"; sid:9000002; rev:1;)
+alert tcp any any -> $HOME_NET 6200 (msg:"BACKDOOR vsfpd 2.3.4 - Connection to port 6200 detected"; sid:9000003; rev:1;)
