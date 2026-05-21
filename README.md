@@ -57,9 +57,21 @@ I'm building hands-on skills across the full security spectrum — from network 
 | Exercise | Scenario | Skills | Report |
 |----------|----------|--------|--------|
 | Incident Response | NexaCorp INC-2026-001 — CVE-2011-2523 (vsftpd 2.3.4) | PCAP forensics, Suricata rule engineering, SIEM gap analysis | [View](04-Blue-Team/01-NexaCorp-Incident-Response/) |
+| Incident Response | NexaCorp INC-2026-002 — Linux Privilege Escalation (SUID abuse) | Log analysis, attack chain reconstruction, Wazuh live detection, detection gap analysis | [View](04-Blue-Team/02-linux-privilege-escalation/) |
 
 <details>
-<summary>NexaCorp highlights</summary>
+<summary>INC-2026-002 highlights</summary>
+
+- SUID `/usr/bin/find` exploited to obtain root — 7-step attack chain reconstructed from auth.log + audit.log
+- Live Wazuh detection: 4/7 steps detected (57%) — 3 critical gaps including initial access and privilege escalation
+- Proposed custom Wazuh rule 100210 + auditd configuration to close the SUID detection gap (T1548.001)
+- Linked to INC-2026-001 — attacker reused SSH key stolen in previous incident
+- Tools: Wazuh, auditd, Linux log analysis
+
+</details>
+
+<details>
+<summary>INC-2026-001 highlights</summary>
 
 - CVE-2011-2523 vsftpd 2.3.4 backdoor — full attack chain reconstructed from PCAP
 - 3 Suricata detection rules written and validated (0 false positives)

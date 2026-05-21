@@ -1,0 +1,67 @@
+================================================================
+NEXACORP SECURITY INCIDENT — INC2026002
+================================================================
+Incident ID      : INC-2026-002
+Classification   : CRITICAL — Root-level compromise, data exfiltration risk
+Incident Date    : 2026-05-15 (night of May 15–16, attack at 2026-05-16 19:43:01)
+Evidence Date    : 2026-05-16
+Reported by      : NexaCorp CISO / escalated from NOC monitoring alert
+Investigated by  : BeCode Corp SOC Team (contracted)
+
+Host             : bru-app-01 — NexaCorp internal application server (Brussels DC)
+OS               : Debian 12 (Linux)
+Service account  : svc_api (uid=1000) — runs the internal REST API service
+IP               : 10.10.10.42 (internal) / 192.168.100.199 (mgmt)
+
+================================================================
+WHAT HAPPENED
+================================================================
+The threat actor obtained a shell as the svc_api service account
+(entry vector not yet determined — potential web app exploit or
+credential stuffing against the API endpoint).
+
+From the svc_api shell, the attacker:
+  1. Enumerated local users and SUID binaries
+  2. Exploited a SUID misconfiguration on /usr/bin/find to gain root
+  3. Read /etc/shadow (credential dumping)
+  4. Created backdoor user 'it_support' with sudo rights
+  5. Harvested SSH private keys from /home and /root
+  6. Installed cron persistence: /etc/cron.d/svc-updater (fires every 10 min)
+
+================================================================
+INVESTIGATION SCOPE — OPEN QUESTIONS
+================================================================
+The initial access vector has not yet been confirmed. Working hypotheses:
+  - Credential stuffing against the internal API endpoint
+  - Reuse of credentials or keys from a previously compromised host
+
+These questions must be answered by the SOC investigation team.
+
+================================================================
+FILES IN THIS BUNDLE
+================================================================
+  auth.log    Authentication events (SSH failures, su, PAM, useradd it_support)
+  audit.log   System call audit trail (execve, setuid, shadow read, cron write)
+  syslog      General system events (service activity, network noise)
+  cron.log    Cron scheduler events (persistence mechanism firing)
+  INCIDENT_METADATA.txt  This file
+
+================================================================
+MITRE ATT&CK TECHNIQUES OBSERVED
+================================================================
+  T1548.001   Setuid/Setgid — /usr/bin/find SUID exploitation
+  T1003.008   /etc/shadow read (head -10 /etc/shadow)
+  T1136.001   useradd it_support (local backdoor account)
+  T1552.004   SSH private key harvest (find /home /root -name id_rsa)
+  T1053.003   Cron persistence — /etc/cron.d/svc-updater (every 30 min)
+  T1059       /bin/sh shell via SUID find -exec
+  T1087.001   Account discovery (id, whoami, cat /etc/passwd)
+
+================================================================
+INVESTIGATION NOTES
+================================================================
+All timestamps are UTC.
+Log collection began at: 2026-05-16 23:41:57 UTC
+Evidence integrity: MD5 checksums not yet computed (SOC to verify)
+
+================================================================
