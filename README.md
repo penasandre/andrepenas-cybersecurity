@@ -140,4 +140,4 @@ I'm building hands-on skills across the full security spectrum — from network 
 
 ---
 
-*All security exercises were performed in isolated, controlled environments on intentionally vulnerable targets. No real systems or users were involved.*
+*All security exercises were performed in isolated, controlled environments on intentionally vulnerable targets. No real systems or users were harmed.*
