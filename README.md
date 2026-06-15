@@ -58,6 +58,43 @@ I'm building hands-on skills across the full security spectrum — from network 
 |----------|----------|--------|--------|
 | Incident Response | NexaCorp INC-2026-001 — CVE-2011-2523 (vsftpd 2.3.4) | PCAP forensics, Suricata rule engineering, SIEM gap analysis | [View](04-Blue-Team/01-NexaCorp-Incident-Response/) |
 | Incident Response | NexaCorp INC-2026-002 — Linux Privilege Escalation (SUID abuse) | Log analysis, attack chain reconstruction, Wazuh live detection, detection gap analysis | [View](04-Blue-Team/02-linux-privilege-escalation/) |
+| Incident Response | NexaCorp INC-2026-003 — Lateral Movement & C2 (CRITICAL) | Multi-host correlation, SSH key-theft pivot, sudo escalation, cron C2 beacon, PCAP network forensics | [View](04-Blue-Team/03-lateral-movement/) |
+| Incident Response | NexaCorp INC-2026-004 — SQL Injection & Credential Exfiltration | UNION + blind boolean injection, HTTP/PCAP correlation, hash assessment, secure-coding remediation | [View](04-Blue-Team/04-sql-injection/) |
+| Incident Response | NexaCorp INC-2026-005 — OS Command Injection, LFI & Web Shell | Command injection analysis, web shell persistence, Suricata rule engineering with FP analysis | [View](04-Blue-Team/05-command-injection-lfi/) |
+
+<details>
+<summary>INC-2026-005 highlights</summary>
+
+- OS command injection via unsanitised ping tool — arbitrary commands as `www-data`, web shell dropped at `/var/www/html/shell.php`, then SSH lateral movement as `j.martin`
+- LFI path-traversal attempts correctly assessed as **failed** (identical response sizes) — successful vs failed exploitation distinguished from evidence
+- 3 Suricata rules written and validated via PCAP replay — fire on attacker traffic with **zero false positives** (fast.log proof included)
+- Same host as INC-2026-004 — actor returned within one week and pivoted vector
+- Tools: Suricata, Wireshark, Apache log analysis
+
+</details>
+
+<details>
+<summary>INC-2026-004 highlights</summary>
+
+- SQL injection on the employee portal — full `users` table exfiltrated (5 accounts, MD5 hashes)
+- Combined UNION-based extraction with blind boolean enumeration across multiple sessions
+- HTTP response-size + PCAP correlation used to confirm each extraction step
+- Remediation centred on parameterised queries, bcrypt/argon2id, DB least-privilege, WAF blocking mode
+- Transparent reporting: incomplete missions flagged as open items, auth.log credential-reuse gap prioritised
+- Tools: web access log analysis, Wireshark, hash assessment
+
+</details>
+
+<details>
+<summary>INC-2026-003 highlights</summary>
+
+- Critical lateral movement across two hosts — stolen `svc_api` SSH key used to pivot to `lge-files-01` in ~90 seconds
+- Root via `sudo python3 NOPASSWD`; hidden `sysupdate` backdoor + cron C2 beacon to `34.251.89.142` (still active at report time)
+- C2 beacon confirmed in PCAP — plaintext HTTP every 5 min, output to `/dev/null` to evade logging
+- Closes the three-incident kill chain (INC-001 → 003), same actor confirmed by shared Tor IP and reused artefacts
+- Tools: Wireshark, Linux log/journal analysis, auditd, MITRE ATT&CK
+
+</details>
 
 <details>
 <summary>INC-2026-002 highlights</summary>
